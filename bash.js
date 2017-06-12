@@ -1,12 +1,17 @@
 // Output a prompt
 var commands = require('./commands.js');
 
+function done (output) {
+  process.stdout.write(output);
+  process.stdout.write('\nprompt > ');
+}
+
 process.stdout.write('prompt > ');
 
 // The stdin 'data' event fires after a user types in a line
 process.stdin.on('data', function (data) {
   var cmd = data.toString().trim(); // remove the newline
-  var cmd = data.toString().trim(); // remove the newline
   let args = cmd.split(' ');
-  commands[args[0].toLowerCase()](args.slice(1));
+  commands[args[0].toLowerCase()](args.slice(1), done);
 });
+

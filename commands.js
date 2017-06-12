@@ -1,61 +1,72 @@
 let fs = require('fs');
+let request = require('request');
 
-function pwd() {
- 	process.stdout.write(process.env.PWD);
-  process.stdout.write('\nprompt > ');
-	
+function pwd(args, done) {
+	let output = process.env.PWD
+ 	done(output);
+
 }
 
-function ls() {
+function curl(args, done) {
+	let url = args[0];
+	request(url, function(err, res, body) {
+		if (err) throw err;
+		done(body);
+	})
+}
+
+function ls(args, done) {
+	let output = '';
 	fs.readdir('.', function(err, files) {
 	  if (err) throw err;
 	  files.forEach(function(file) {
-	    process.stdout.write(file.toString() + "\n");
+	    output += file.toString() + "\n";
 	  })
-	  process.stdout.write("\nprompt > ");
+		done(output);
 	});
 }
 
-function cat(args) {
+function cat(args, done) {
+	let output = '';
 	args = args.map(function(ele , index) {
 		fs.readFile(ele, function(err,data) {
 			if (err) throw err;
-			process.stdout.write(data);
+			output += data + '\n';
 			if(index === args.length - 1 ) {
-				process.stdout.write("\nprompt > ");
+				done(output);
 			}
 		});
 	});
 }
 
-function head(path) {
+function head(path, done) {
 	fs.readFile(path[0], function(err, data) {
 		if (err) {throw err;}
 		data = data.toString();
 		data = data.split('\n').slice(0, 5).join('\n');
-		process.stdout.write(data);
+		done(data);
 	});
 }
 
-function tail(path) {
+function tail(path, done) {
 	fs.readFile(path[0], function(err, data) {
 		if (err) {throw err;}
 		data = data.toString();
 		data = data.split('\n').reverse().slice(0, 5).reverse().join('\n');
-		process.stdout.write(data);
+		done(data);
 	});
 }
 
-function sort(path) {
+function sort(path, done) {
 	fs.readFile(path[0], function(err, data) {
 		if (err) {throw err;}
 		data = data.toString();
 		data = data.split('\n').sort().join('\n');
-		process.stdout.write(data);
+		done(data);
 	});
 }
 
-function uniq(path) {
+function uniq(path, done) {
 	fs.readFile(path[0], function(err, data) {
 		if (err) {throw err;}
 		data = data.toString();
@@ -73,18 +84,18 @@ function uniq(path) {
 			}
 		});
 		data = data.join('\n');
-		process.stdout.write(data);
+		done(data);
 	});
 }
 
-function date() {
+function date(args, done) {
  	let time = new Date().getTime();
  	let date = new Date(time);
- 	process.stdout.write(date.toString());
-	process.stdout.write("\nprompt > ");
+ 	let output = date.toString();
+	done(output);
 }
 
-function echo(args) {
+function echo(args, done) {
 	args = args.map(function(x) {
 		if(x[0] === '$') {
 			return process.env[x.slice(1)];
@@ -93,8 +104,7 @@ function echo(args) {
 		}
 	});
 	args = args.join(' ');
-	process.stdout.write(args);
-	process.stdout.write("\nprompt > ");
+	done(args);
 }
 
 module.exports.pwd = pwd;
@@ -106,3 +116,4 @@ module.exports.head = head;
 module.exports.tail = tail;
 module.exports.sort = sort;
 module.exports.uniq = uniq;
+module.exports.curl = curl;
