@@ -1,0 +1,22 @@
+{
+  "name": "node_workshop",
+  "version": "1.0.0",
+  "description": "description",
+  "main": "bash.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhu7235/nodeJS.git"
+  },
+  "author": "Jason Hu and Willy Raedy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhu7235/nodeJS/issues"
+  },
+  "homepage": "https://github.com/jhu7235/nodeJS#readme",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
+}
